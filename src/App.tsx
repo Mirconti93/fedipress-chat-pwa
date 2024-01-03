@@ -154,7 +154,7 @@ function App() {
     return (
         <div className="h-100 d-flex flex-column overflow-hidden">
             <Container fluid className="p-4 flex-grow-1 position-relative overflow-hidden">
-                <Row className="h-50 pb-2 flex-nowrap">
+                <Row className="pb-2 flex-nowrap max-height">
                     <Col>
                         <ChatProvider serviceFactory={serviceFactory} storage={akaneStorage} config={{
                             typingThrottleTime: 250,
@@ -173,28 +173,6 @@ function App() {
                             autoDraft: AutoDraft.Save | AutoDraft.Restore
                         }}>
                             <Chat user={eliot}/>
-                        </ChatProvider>
-                    </Col>
-                </Row>
-                <Row className="h-50 pt-2 flex-nowrap">
-                    <Col>
-                        <ChatProvider serviceFactory={serviceFactory} storage={emilyStorage} config={{
-                            typingThrottleTime: 250,
-                            typingDebounceTime: 900,
-                            debounceTyping: true,
-                            autoDraft: AutoDraft.Save | AutoDraft.Restore
-                        }}>
-                            <Chat user={emily}/>
-                        </ChatProvider>
-                    </Col>
-                    <Col>
-                        <ChatProvider serviceFactory={serviceFactory} storage={joeStorage} config={{
-                            typingThrottleTime: 250,
-                            typingDebounceTime: 900,
-                            debounceTyping: true,
-                            autoDraft: AutoDraft.Save | AutoDraft.Restore
-                        }}>
-                            <Chat user={joe}/>
                         </ChatProvider>
                     </Col>
                 </Row>

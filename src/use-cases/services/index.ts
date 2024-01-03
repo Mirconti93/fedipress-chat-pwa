@@ -1,1 +1,1 @@
-export * from "./ExampleChatService";
+export * from "./FediChatService";
