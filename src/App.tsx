@@ -16,13 +16,13 @@ import {
     UpdateState,
     User,
     UserStatus
-} from "@chatscope/use-chat";
-import {ExampleChatService} from "@chatscope/use-chat/dist/examples";
+} from "./use-cases";
+import {FediChatService} from "./use-cases/services/FediChatService";
 import {Chat} from "./components/Chat";
 import {nanoid} from "nanoid";
 import {Col, Container, Row} from "react-bootstrap";
 import {akaneModel, eliotModel, emilyModel, joeModel, users} from "./data/data";
-import {AutoDraft} from "@chatscope/use-chat/dist/enums/AutoDraft";
+import {AutoDraft} from "./use-cases/enums/AutoDraft";
 import {Footer} from "./components/Footer";
 
 // sendMessage and addMessage methods can automagically generate id for messages and groups
@@ -39,7 +39,7 @@ const joeStorage = new BasicStorage({groupIdGenerator, messageIdGenerator});
 
 // Create serviceFactory
 const serviceFactory = (storage: IStorage, updateState: UpdateState) => {
-    return new ExampleChatService(storage, updateState);
+    return new FediChatService(storage, updateState);
 };
 
 const akane = new User({

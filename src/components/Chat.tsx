@@ -8,8 +8,8 @@ import {
     MessageContentType,
     MessageDirection,
     MessageStatus
-} from "@chatscope/use-chat";
-import {MessageContent, TextContent, User} from "@chatscope/use-chat";
+} from "../use-cases";
+import {MessageContent, TextContent, User} from "../use-cases";
 
 export const Chat = ({user}:{user:User}) => {
     
