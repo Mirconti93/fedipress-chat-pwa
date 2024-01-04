@@ -1,4 +1,4 @@
-import {useMemo, useCallback, useEffect} from "react";
+import {useMemo, useCallback, useEffect, useState, MouseEvent} from "react";
 
 import { MainContainer, Sidebar, ConversationList, Conversation, Avatar, ChatContainer, ConversationHeader, MessageGroup, Message,MessageList, MessageInput, TypingIndicator } from "@chatscope/chat-ui-kit-react";
 
@@ -111,6 +111,55 @@ export const Chat = ({user}:{user:User}) => {
 
         }, [activeConversation, getUser],
     );
+
+    const handleOnAttach = (evt: MouseEvent<HTMLButtonElement>) => {
+        console.log('Click on attach');
+    };
+
+    const handleRightClick = (e: React.MouseEvent<HTMLDivElement>) => {
+        e.preventDefault(); // Impedisce il menu contestuale predefinito di apparire
+        console.log('Click destro eseguito');
+        setPopupPosition({ x: e.clientX, y: e.clientY });
+        setPopupIsOpen(true);
+        console.log('Open popup');
+    };
+
+    const [popupIsOpen, setPopupIsOpen] = useState(false);
+  
+    const closePopup = () => {
+      setPopupIsOpen(false);
+    };
+
+    interface Position {
+        x: number;
+        y: number;
+      }
+
+    interface PopupProps {
+        screenPos: Position;    
+    }
+
+    const [popupPosition, setPopupPosition] = useState({ x: 0, y: 0 });
+
+    //style={{ position: 'absolute', left: screenPos.x, top: screenPos.y, border: '1px solid black', padding: '10px' }}>
+    const PopupComponent: React.FC<PopupProps> = ({ screenPos}) => {
+        console.log('Open popup pos:' + screenPos.x +" " +screenPos.y);
+        return (
+          <div>
+            {popupIsOpen && (
+              <div className="popup"> 
+                <div className="popup-content">
+                  <span className="close" onClick={closePopup}>
+                    &times;
+                  </span>
+                  <p>Contenuto del popup qui...</p>
+                  <button>Delete</button>
+                </div>
+              </div>
+            )}
+          </div>
+        );
+      };
     
     return (<MainContainer responsive>
         <Sidebar position="left" scrollable>
@@ -164,13 +213,15 @@ export const Chat = ({user}:{user:User}) => {
                             payload: m.content,
                             direction: m.direction,
                             position: "normal"
-                        }} />)}
+                        }} 
+                        onContextMenu={handleRightClick}
+                        />)}
                     </MessageGroup.Messages>
                 </MessageGroup>)}
             </MessageList>
-            <MessageInput value={currentMessage} onChange={handleChange} onSend={handleSend} disabled={!activeConversation} attachButton={false} placeholder="Type here..."/>
+            <MessageInput value={currentMessage} onChange={handleChange} onSend={handleSend} disabled={!activeConversation} attachButton={true} placeholder="Type here..." onAttachClick={handleOnAttach}/>
         </ChatContainer>
-        
+        <PopupComponent screenPos={popupPosition}/>
     </MainContainer>);
     
 }
