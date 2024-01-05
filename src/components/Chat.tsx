@@ -141,27 +141,23 @@ export const Chat = ({user}:{user:User}) => {
 
     const [popupPosition, setPopupPosition] = useState({ x: 0, y: 0 });
 
-    //style={{ position: 'absolute', left: screenPos.x, top: screenPos.y, border: '1px solid black', padding: '10px' }}>
+    //>
     const PopupComponent: React.FC<PopupProps> = ({ screenPos}) => {
         console.log('Open popup pos:' + screenPos.x +" " +screenPos.y);
         return (
-          <div>
-            {popupIsOpen && (
-              <div className="popup"> 
-                <div className="popup-content">
-                  <span className="close" onClick={closePopup}>
-                    &times;
-                  </span>
-                  <p>Contenuto del popup qui...</p>
-                  <button>Delete</button>
-                </div>
-              </div>
-            )}
+        <div className="popup" style={{ left: screenPos.x, top: screenPos.y}}>
+            <div >
+                <p><span className="close" onClick={closePopup}>
+                &times;
+                </span></p>
+                <button className="popup-button">Delete</button>
+            </div>
           </div>
         );
       };
     
     return (<MainContainer responsive>
+        {popupIsOpen && (<PopupComponent screenPos={popupPosition}/>)}
         <Sidebar position="left" scrollable>
             <ConversationHeader style={{backgroundColor:"#fff"}}>
                 <Avatar src={user.avatar} />
@@ -221,7 +217,8 @@ export const Chat = ({user}:{user:User}) => {
             </MessageList>
             <MessageInput value={currentMessage} onChange={handleChange} onSend={handleSend} disabled={!activeConversation} attachButton={true} placeholder="Type here..." onAttachClick={handleOnAttach}/>
         </ChatContainer>
-        <PopupComponent screenPos={popupPosition}/>
-    </MainContainer>);
+    </MainContainer>
+    
+    );
     
 }
