@@ -46,6 +46,10 @@ export class FediChatService implements IChatService {
   storage?: IStorage;
   updateState: UpdateState;
 
+  MESSAGE_TYPE = "message";
+  TYPING_TYPE = "typing";
+  DELETE_TYPE = "delete";
+
   eventHandlers: EventHandlers = {
     onMessage: () => {},
     onConnectionStateChanged: () => {},
@@ -71,7 +75,7 @@ export class FediChatService implements IChatService {
         detail,
       } = event;
 
-      if (type === "message") {
+      if (type ===this.MESSAGE_TYPE) {
         const message = detail.message as ChatMessage<MessageContentType.TextHtml>;
 
         message.direction = MessageDirection.Incoming;
@@ -96,7 +100,24 @@ export class FediChatService implements IChatService {
             new MessageEvent({ message, conversationId })
           );
         }
-      } else if (type === "typing") {
+      } else if (type === this.TYPING_TYPE) {
+        const { userId, isTyping, conversationId, content, sender } = detail;
+
+        if (this.eventHandlers.onUserTyping && sender !== this) {
+          // Running the onUserTyping callback registered by ChatProvider will cause:
+          // 1. Add the user to the list of users who are typing in the conversation
+          // 2. Debounce
+          // 3. Re-render
+          this.eventHandlers.onUserTyping(
+            new UserTypingEvent({
+              userId,
+              isTyping,
+              conversationId,
+              content,
+            })
+          );
+        }
+      } else if (type === this.DELETE_TYPE) {
         const { userId, isTyping, conversationId, content, sender } = detail;
 
         if (this.eventHandlers.onUserTyping && sender !== this) {
@@ -124,7 +145,26 @@ export class FediChatService implements IChatService {
     // you will implement sending messages to your chat server.
     const messageEvent = new CustomEvent("chat-protocol", {
       detail: {
-        type: "message",
+        type:this.MESSAGE_TYPE,
+        message,
+        conversationId,
+        sender: this,
+      },
+    });
+
+    window.dispatchEvent(messageEvent);
+
+    return message;
+  }
+
+  deleteMessage({ message, conversationId }: SendMessageServiceParams) {
+    // We send messages using a CustomEvent dispatched to the window object.
+    // They are received in the callback assigned in the constructor.
+    // In a real application, instead of dispatching the event here,
+    // you will implement sending messages to your chat server.
+    const messageEvent = new CustomEvent("chat-protocol", {
+      detail: {
+        type: this.DELETE_TYPE,
         message,
         conversationId,
         sender: this,
@@ -148,7 +188,7 @@ export class FediChatService implements IChatService {
     // you will implement sending signalization to your chat server.
     const typingEvent = new CustomEvent("chat-protocol", {
       detail: {
-        type: "typing",
+        type: this.TYPING_TYPE,
         isTyping,
         content,
         conversationId,

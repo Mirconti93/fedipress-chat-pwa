@@ -10,6 +10,7 @@ import {
     MessageStatus
 } from "../use-cases";
 import {MessageContent, TextContent, User} from "../use-cases";
+import PopupComponent from "./Popup";
 
 export const Chat = ({user}:{user:User}) => {
     
@@ -130,34 +131,10 @@ export const Chat = ({user}:{user:User}) => {
       setPopupIsOpen(false);
     };
 
-    interface Position {
-        x: number;
-        y: number;
-      }
-
-    interface PopupProps {
-        screenPos: Position;    
-    }
-
     const [popupPosition, setPopupPosition] = useState({ x: 0, y: 0 });
-
-    //>
-    const PopupComponent: React.FC<PopupProps> = ({ screenPos}) => {
-        console.log('Open popup pos:' + screenPos.x +" " +screenPos.y);
-        return (
-        <div className="popup" style={{ left: screenPos.x, top: screenPos.y}}>
-            <div >
-                <p><span className="close" onClick={closePopup}>
-                &times;
-                </span></p>
-                <button className="popup-button">Delete</button>
-            </div>
-          </div>
-        );
-      };
     
     return (<MainContainer responsive>
-        {popupIsOpen && (<PopupComponent screenPos={popupPosition}/>)}
+        {popupIsOpen && (<PopupComponent screenPos={popupPosition} closePopup={closePopup}/>)}
         <Sidebar position="left" scrollable>
             <ConversationHeader style={{backgroundColor:"#fff"}}>
                 <Avatar src={user.avatar} />
