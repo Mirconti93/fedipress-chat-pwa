@@ -13,11 +13,16 @@ import {
 import { IStorage } from "../interfaces";
 import { ChatEvent, MessageEvent, UserTypingEvent } from "../events";
 import { ChatMessage } from "../ChatMessage";
+import { DeleteMessageEvent } from "../events/DeleteMessageEvent";
 
 type EventHandlers = {
   onMessage: ChatEventHandler<
     ChatEventType.Message,
     ChatEvent<ChatEventType.Message>
+  >;
+  onDeleteMessage: ChatEventHandler<
+    ChatEventType.DeleteMessage,
+    ChatEvent<ChatEventType.DeleteMessage>
   >;
   onConnectionStateChanged: ChatEventHandler<
     ChatEventType.ConnectionStateChanged,
@@ -46,12 +51,9 @@ export class FediChatService implements IChatService {
   storage?: IStorage;
   updateState: UpdateState;
 
-  MESSAGE_TYPE = "message";
-  TYPING_TYPE = "typing";
-  DELETE_TYPE = "delete";
-
   eventHandlers: EventHandlers = {
     onMessage: () => {},
+    onDeleteMessage: () => {},
     onConnectionStateChanged: () => {},
     onUserConnected: () => {},
     onUserDisconnected: () => {},
@@ -75,7 +77,7 @@ export class FediChatService implements IChatService {
         detail,
       } = event;
 
-      if (type ===this.MESSAGE_TYPE) {
+      if (type ===ChatEventType.Message) {
         const message = detail.message as ChatMessage<MessageContentType.TextHtml>;
 
         message.direction = MessageDirection.Incoming;
@@ -100,7 +102,7 @@ export class FediChatService implements IChatService {
             new MessageEvent({ message, conversationId })
           );
         }
-      } else if (type === this.TYPING_TYPE) {
+      } else if (type === ChatEventType.UserTyping) {
         const { userId, isTyping, conversationId, content, sender } = detail;
 
         if (this.eventHandlers.onUserTyping && sender !== this) {
@@ -117,21 +119,17 @@ export class FediChatService implements IChatService {
             })
           );
         }
-      } else if (type === this.DELETE_TYPE) {
-        const { userId, isTyping, conversationId, content, sender } = detail;
+      } else if (type === ChatEventType.DeleteMessage) {
+        const message = detail.message as ChatMessage<MessageContentType.TextHtml>;
+        const { conversationId } = detail;
 
-        if (this.eventHandlers.onUserTyping && sender !== this) {
+        if (this.eventHandlers.onDeleteMessage && detail.sender !== this) {
           // Running the onUserTyping callback registered by ChatProvider will cause:
           // 1. Add the user to the list of users who are typing in the conversation
           // 2. Debounce
           // 3. Re-render
-          this.eventHandlers.onUserTyping(
-            new UserTypingEvent({
-              userId,
-              isTyping,
-              conversationId,
-              content,
-            })
+          this.eventHandlers.onDeleteMessage(
+            new DeleteMessageEvent({ message, conversationId })
           );
         }
       }
@@ -145,26 +143,7 @@ export class FediChatService implements IChatService {
     // you will implement sending messages to your chat server.
     const messageEvent = new CustomEvent("chat-protocol", {
       detail: {
-        type:this.MESSAGE_TYPE,
-        message,
-        conversationId,
-        sender: this,
-      },
-    });
-
-    window.dispatchEvent(messageEvent);
-
-    return message;
-  }
-
-  deleteMessage({ message, conversationId }: SendMessageServiceParams) {
-    // We send messages using a CustomEvent dispatched to the window object.
-    // They are received in the callback assigned in the constructor.
-    // In a real application, instead of dispatching the event here,
-    // you will implement sending messages to your chat server.
-    const messageEvent = new CustomEvent("chat-protocol", {
-      detail: {
-        type: this.DELETE_TYPE,
+        type:ChatEventType.Message,
         message,
         conversationId,
         sender: this,
@@ -188,7 +167,7 @@ export class FediChatService implements IChatService {
     // you will implement sending signalization to your chat server.
     const typingEvent = new CustomEvent("chat-protocol", {
       detail: {
-        type: this.TYPING_TYPE,
+        type: ChatEventType.UserTyping,
         isTyping,
         content,
         conversationId,

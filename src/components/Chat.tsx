@@ -7,16 +7,17 @@ import {
     ChatMessage,
     MessageContentType,
     MessageDirection,
-    MessageStatus
+    MessageStatus,
+    ChatMessageId
 } from "../use-cases";
 import {MessageContent, TextContent, User} from "../use-cases";
-import PopupComponent from "./Popup";
+import ExtendedMessage from "./ExtendedMessage";
 
 export const Chat = ({user}:{user:User}) => {
     
     // Get all chat related values and methods from useChat hook 
     const {
-        currentMessages, conversations, activeConversation, setActiveConversation,  sendMessage, getUser, currentMessage, setCurrentMessage,
+        currentMessages, conversations, activeConversation, setActiveConversation, deleteMessage, sendMessage, getUser, currentMessage, setCurrentMessage,
         sendTyping, setCurrentUser
     } = useChat();
     
@@ -113,29 +114,16 @@ export const Chat = ({user}:{user:User}) => {
         }, [activeConversation, getUser],
     );
 
+    const handleDelete = (message: ChatMessage<MessageContentType>) => {
+        deleteMessage(message);
+    }
+
     const handleOnAttach = (evt: MouseEvent<HTMLButtonElement>) => {
         console.log('Click on attach');
     };
-
-    const handleRightClick = (e: React.MouseEvent<HTMLDivElement>) => {
-        e.preventDefault(); // Impedisce il menu contestuale predefinito di apparire
-        console.log('Click destro eseguito');
-        setPopupPosition({ x: e.clientX, y: e.clientY });
-        setPopupIsOpen(true);
-        console.log('Open popup');
-    };
-
-    const [popupIsOpen, setPopupIsOpen] = useState(false);
-  
-    const closePopup = () => {
-      setPopupIsOpen(false);
-    };
-
-    const [popupPosition, setPopupPosition] = useState({ x: 0, y: 0 });
     
     return (<MainContainer responsive>
-        {popupIsOpen && (<PopupComponent screenPos={popupPosition} closePopup={closePopup}/>)}
-        <Sidebar position="left" scrollable>
+       <Sidebar position="left" scrollable>
             <ConversationHeader style={{backgroundColor:"#fff"}}>
                 <Avatar src={user.avatar} />
                 <ConversationHeader.Content>
@@ -181,14 +169,7 @@ export const Chat = ({user}:{user:User}) => {
             <MessageList typingIndicator={getTypingIndicator()}>
                 {activeConversation && currentMessages.map( (g) => <MessageGroup key={g.id} direction={g.direction}>
                     <MessageGroup.Messages>
-                        {g.messages.map((m:ChatMessage<MessageContentType>) => <Message key={m.id} model={{
-                            type: "html",
-                            payload: m.content,
-                            direction: m.direction,
-                            position: "normal"
-                        }} 
-                        onContextMenu={handleRightClick}
-                        />)}
+                        {g.messages.map((m:ChatMessage<MessageContentType>) => <ExtendedMessage key={m.id} message={m} handleDelete={handleDelete} handleEdit={()=>{}}/>)}
                     </MessageGroup.Messages>
                 </MessageGroup>)}
             </MessageList>

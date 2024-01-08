@@ -344,6 +344,26 @@ export class BasicStorage<ConversationData = any>
     }
   }
 
+  //todo implement delete
+  deleteMessage(message: ChatMessage<MessageContentType>): void {
+    for (const conversationId in this.messages) {
+      const groups = this.messages[conversationId];
+      console.log("message:" + message.id)
+      const l = groups.length;
+      console.log("messages length:" + l)
+      for (let i = 0; i < l; i++) {
+        const group = groups[i];
+
+        const [currentMessage, idx] = group.getMessage(message.id);
+
+        if (currentMessage) {
+          group.removeMessage(idx as number);
+        }
+      }
+      console.log("messages length:" + groups.length)
+    }
+  }
+
   /**
    * Set user presence
    * @param userId

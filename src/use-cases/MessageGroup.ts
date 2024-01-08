@@ -72,5 +72,13 @@ export class MessageGroup {
     return true;
   }
 
+  removeMessage(
+    index: number
+  ) {
+    this.messages = this.messages
+    .slice(0, index)
+    .concat(this.messages.slice(index + 1));
+  }
+
   // TODO: Remove message
 }

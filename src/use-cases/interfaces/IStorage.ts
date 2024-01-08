@@ -154,6 +154,13 @@ export interface IStorage<ConversationData = any, UserData = any> {
   updateMessage: (message: ChatMessage<MessageContentType>) => void;
 
   /**
+   * Delete message
+   * @param message
+   * @param index
+   */
+  deleteMessage: (message: ChatMessage<MessageContentType>) => void;
+
+  /**
    * Reset state to default
    */
   resetState: () => void;

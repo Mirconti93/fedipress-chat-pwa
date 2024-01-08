@@ -57,6 +57,7 @@ type ChatContextProps = ChatState & {
     generateId: boolean
   ) => void;
   updateMessage: (message: ChatMessage<MessageContentType>) => void;
+  deleteMessage: (message: ChatMessage<MessageContentType>) => void;
   setDraft: (message: string) => void;
   sendTyping: (params: SendTypingParams) => void;
   addConversation: (conversation: Conversation) => void;
@@ -88,6 +89,7 @@ type ChatContextPropsTyped<S extends IChatService> =
         generateId: boolean
       ) => void;
       updateMessage: (message: ChatMessage<MessageContentType>) => void;
+      deleteMessage: (message: ChatMessage<MessageContentType>) => void;
       setDraft: (message: string) => void;
       sendTyping: (params: SendTypingParams) => void;
       addConversation: (conversation: Conversation) => void;
@@ -167,6 +169,29 @@ const useStorage = (
   // Register event handlers
   useEffect(() => {
     const onMessage = ({ message, conversationId }: MessageEvent) => {
+      storage.addMessage(message, conversationId, false);
+
+      const [conversation] = storage.getConversation(conversationId);
+
+      // Increment unread counter
+      const { activeConversation } = storage.getState();
+
+      if (
+        conversation &&
+        (!activeConversation || activeConversation.id !== conversationId)
+      ) {
+        storage.setUnread(conversationId, conversation.unreadCounter + 1);
+      }
+
+      // Reset typing
+      if (conversation) {
+        conversation.removeTypingUser(message.senderId);
+      }
+
+      updateState();
+    };
+
+    const onDeleteMessage = ({ message, conversationId }: MessageEvent) => {
       storage.addMessage(message, conversationId, false);
 
       const [conversation] = storage.getConversation(conversationId);
@@ -459,6 +484,20 @@ export const ChatProvider = <S extends IChatService>({
     [storage, updateState]
   );
 
+
+    /**
+   * Delete message
+   * @param message
+   * @param index
+   */
+  const deleteMessage = useCallback(
+    (message: ChatMessage<MessageContentType>) => {
+      storage.deleteMessage(message);
+      updateState();
+    },
+    [storage, updateState]
+  );
+
   /**
    * Set draft of message in current conversation
    * @param {String} draft
@@ -570,6 +609,7 @@ export const ChatProvider = <S extends IChatService>({
         sendMessage,
         addMessage,
         updateMessage,
+        deleteMessage,
         setDraft,
         sendTyping,
         addConversation,
