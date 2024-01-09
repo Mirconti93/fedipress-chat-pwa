@@ -43,6 +43,12 @@ export type SendMessageServiceParams = {
   conversationId: ConversationId;
 };
 
+
+export type DeleteMessageServiceParams = {
+  message: ChatMessage<MessageContentType>;
+  conversationId: ConversationId;
+};
+
 export interface SendTypingServiceParams {
   conversationId: ConversationId;
   userId: UserId;

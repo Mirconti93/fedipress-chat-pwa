@@ -2,7 +2,6 @@ import { useState } from "react";
 import { ChatMessage, MessageContentType, MessageDirection } from "../use-cases";
 import { Row } from "react-bootstrap";
 import { Message } from "@chatscope/chat-ui-kit-react";
-import { OutgoingMessage } from "http";
 
 
 
@@ -20,7 +19,7 @@ const ExtendedMessage: React.FC<ExtendedMessageProps> = ({message, handleEdit, h
     console.log('popupIsOpen:' + popupIsOpen + 'message direction:' + message.direction);
 
     return (
-      <Row>
+      <Row className="message-row">
         {popupIsOpen && message.direction === MessageDirection.Incoming && <div className="popup">
           <div >
               <p><span className="close" onClick={()=>{setPopupIsOpen(false)}}>
@@ -31,12 +30,14 @@ const ExtendedMessage: React.FC<ExtendedMessageProps> = ({message, handleEdit, h
 
           </div>
         </div>}
-        <Message key={message.id} model={{
-                            type: "html",
-                            payload: message.content,
-                            direction: message.direction,
-                            position: "normal"
-                        }} onClick={()=>setPopupIsOpen(true)}/>        
+
+          <Message key={message.id} model={{
+                              type: "html",
+                              payload: message.content,
+                              direction: message.direction,
+                              position: "normal"
+                          }} onClick={()=>setPopupIsOpen(true)}/>        
+
       </Row>
 
     );

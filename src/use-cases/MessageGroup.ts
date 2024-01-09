@@ -80,5 +80,4 @@ export class MessageGroup {
     .concat(this.messages.slice(index + 1));
   }
 
-  // TODO: Remove message
 }

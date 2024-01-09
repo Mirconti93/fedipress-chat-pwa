@@ -5,3 +5,4 @@ export * from "./UserConnectedEvent";
 export * from "./UserDisconnectedEvent";
 export * from "./UserPresenceChangedEvent";
 export * from "./UserTypingEvent";
+export * from "./DeleteMessageEvent";

@@ -1,6 +1,7 @@
 import { ChatEventType } from "../enums";
 import {
   ChatEventHandler,
+  DeleteMessageServiceParams,
   SendMessageServiceParams,
   SendTypingServiceParams,
 } from "../Types";
@@ -56,4 +57,6 @@ export interface IChatService {
    * @param content
    */
   sendTyping: (params: SendTypingServiceParams) => void;
+
+  deleteMessage: (params: DeleteMessageServiceParams) => void;
 }

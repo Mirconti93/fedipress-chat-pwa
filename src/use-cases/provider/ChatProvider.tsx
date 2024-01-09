@@ -30,6 +30,7 @@ import { useThrottledSendTyping } from "./useThrottledSendTyping";
 import { useDebounceTyping } from "./useDebounceTyping";
 import type { MessageGroup } from "../MessageGroup";
 import { useLazyServiceFactoryRef } from "./useLazyServiceFactoryRef";
+import { DeleteMessageEvent } from "../events/DeleteMessageEvent";
 
 export interface SendMessageParams {
   message: ChatMessage<MessageContentType>;
@@ -37,6 +38,11 @@ export interface SendMessageParams {
   senderId: string;
   generateId?: boolean;
   clearMessageInput?: boolean;
+}
+
+export interface RemoveMessageParams {
+  message: ChatMessage<MessageContentType>;
+  conversationId: ConversationId;
 }
 
 export interface SendTypingParams extends SendTypingServiceParams {
@@ -58,6 +64,7 @@ type ChatContextProps = ChatState & {
   ) => void;
   updateMessage: (message: ChatMessage<MessageContentType>) => void;
   deleteMessage: (message: ChatMessage<MessageContentType>) => void;
+  removeMessage: (params: RemoveMessageParams) => void;
   setDraft: (message: string) => void;
   sendTyping: (params: SendTypingParams) => void;
   addConversation: (conversation: Conversation) => void;
@@ -191,8 +198,8 @@ const useStorage = (
       updateState();
     };
 
-    const onDeleteMessage = ({ message, conversationId }: MessageEvent) => {
-      storage.addMessage(message, conversationId, false);
+    const onDeleteMessage = ({ message, conversationId }: DeleteMessageEvent) => {
+      storage.deleteMessage(message);
 
       const [conversation] = storage.getConversation(conversationId);
 
@@ -208,7 +215,7 @@ const useStorage = (
 
       // Reset typing
       if (conversation) {
-        conversation.removeTypingUser(message.senderId);
+        conversation.removeTypingUser(message.senderId)
       }
 
       updateState();
@@ -255,6 +262,7 @@ const useStorage = (
     service.on(ChatEventType.UserDisconnected, onUserDisconnected);
     service.on(ChatEventType.UserPresenceChanged, onUserPresenceChanged);
     service.on(ChatEventType.UserTyping, onUserTyping);
+    service.on(ChatEventType.DeleteMessage, onDeleteMessage);
 
     return () => {
       service.off(ChatEventType.Message, onMessage);
@@ -484,7 +492,6 @@ export const ChatProvider = <S extends IChatService>({
     [storage, updateState]
   );
 
-
     /**
    * Delete message
    * @param message
@@ -497,6 +504,26 @@ export const ChatProvider = <S extends IChatService>({
     },
     [storage, updateState]
   );
+
+  const removeMessage = useCallback(
+    ({
+      message,
+      conversationId,
+    }: RemoveMessageParams) => {
+      storage.deleteMessage(
+        message
+      );
+
+      updateState();
+
+      serviceRef.current.deleteMessage({
+        message: message,
+        conversationId,
+      });
+    },
+    [storage, updateState, serviceRef]
+  );
+
 
   /**
    * Set draft of message in current conversation
@@ -610,6 +637,7 @@ export const ChatProvider = <S extends IChatService>({
         addMessage,
         updateMessage,
         deleteMessage,
+        removeMessage,
         setDraft,
         sendTyping,
         addConversation,

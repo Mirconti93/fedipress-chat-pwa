@@ -11,9 +11,8 @@ import {
   UpdateState,
 } from "../Types";
 import { IStorage } from "../interfaces";
-import { ChatEvent, MessageEvent, UserTypingEvent } from "../events";
+import { ChatEvent, MessageEvent, UserTypingEvent, DeleteMessageEvent, DeleteMessageEventParams } from "../events";
 import { ChatMessage } from "../ChatMessage";
-import { DeleteMessageEvent } from "../events/DeleteMessageEvent";
 
 type EventHandlers = {
   onMessage: ChatEventHandler<
@@ -178,6 +177,24 @@ export class FediChatService implements IChatService {
 
     window.dispatchEvent(typingEvent);
   }
+
+  deleteMessage({ message, conversationId }: DeleteMessageEventParams) {
+    // We send the "typing" signalization using a CustomEvent dispatched to the window object.
+    // It is received in the callback assigned in the constructor
+    // In a real application, instead of dispatching the event here,
+    // you will implement sending signalization to your chat server.
+    const deleteMessageEvent = new CustomEvent("chat-protocol", {
+      detail: {
+        type:ChatEventType.DeleteMessage,
+        message,
+        conversationId,
+        sender: this,
+      },
+    });
+
+    window.dispatchEvent(deleteMessageEvent);
+  }
+
 
   // The ChatProvider registers callbacks with the service.
   // These callbacks are necessary to notify the provider of the changes.

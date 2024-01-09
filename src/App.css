@@ -6,6 +6,10 @@
     height: 100%;
 }
 
+.message-row {
+   margin: 4px; 
+}
+
 .popup {
     padding: 10px;
     border-radius: .7em;

@@ -3,7 +3,7 @@ import { ChatEvent } from "./ChatEvent";
 import { ConversationId } from "../Types";
 import { ChatMessage } from "../ChatMessage";
 
-export type DeleteMessageEventParams<T extends MessageContentType> = {
+export type DeleteMessageEventParams = {
   message: ChatMessage<MessageContentType>;
   conversationId: ConversationId;
 };
@@ -16,7 +16,7 @@ export class DeleteMessageEvent implements ChatEvent<ChatEventType.DeleteMessage
   constructor({
     message,
     conversationId,
-  }: DeleteMessageEventParams<MessageContentType>) {
+  }: DeleteMessageEventParams) {
     this.message = message;
     this.conversationId = conversationId;
   }
