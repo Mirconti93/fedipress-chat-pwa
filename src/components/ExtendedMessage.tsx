@@ -15,6 +15,7 @@ const ExtendedMessage: React.FC<ExtendedMessageProps> = ({message, handleEdit, h
     console.log('message:' + message.id);
 
     const [popupIsOpen, setPopupIsOpen] = useState(false);
+    const [editMode, setEditMode] = useState(false);
 
     console.log('popupIsOpen:' + popupIsOpen + 'message direction:' + message.direction);
 
@@ -25,18 +26,22 @@ const ExtendedMessage: React.FC<ExtendedMessageProps> = ({message, handleEdit, h
               <p><span className="close" onClick={()=>{setPopupIsOpen(false)}}>
               &times;
               </span></p>
-              <button className="popup-button" onClick={(e) => handleEdit}>Edit</button>
+              <button className="popup-button" onClick={(e) => setEditMode(true)}>Edit</button>
               <button className="popup-button" onClick={(e) => handleDelete(message)}>Delete</button>
 
           </div>
         </div>}
 
-          <Message key={message.id} model={{
-                              type: "html",
-                              payload: message.content,
-                              direction: message.direction,
-                              position: "normal"
-                          }} onClick={()=>setPopupIsOpen(true)}/>        
+        {editMode ? (<div>
+            <textarea/>  
+          </div>): 
+          (<Message key={message.id} model={{
+              type: "html",
+              payload: message.content,
+              direction: message.direction,
+              position: "normal"
+          }} onClick={()=>setPopupIsOpen(true)}/>) 
+        }
 
       </Row>
 
