@@ -23,17 +23,20 @@ const ExtendedMessage: React.FC<ExtendedMessageProps> = ({message, handleEdit, h
       <Row className="message-row">
         {popupIsOpen && message.direction === MessageDirection.Incoming && <div className="popup">
           <div >
-              <p><span className="close" onClick={()=>{setPopupIsOpen(false)}}>
+              <Row><span className="close" onClick={()=>{setPopupIsOpen(false)}}>
               &times;
-              </span></p>
-              <button className="popup-button" onClick={(e) => setEditMode(true)}>Edit</button>
-              <button className="popup-button" onClick={(e) => handleDelete(message)}>Delete</button>
-
+              </span></Row>
+              <Row>
+                <button className="popup-button" onClick={(e) => setEditMode(true)}>Edit</button>
+              </Row>
+              <Row>
+                <button className="popup-button" onClick={(e) => handleDelete(message)}>Delete</button>
+              </Row>
           </div>
         </div>}
 
         {editMode ? (<div>
-            <textarea/>  
+            <textarea className="edit-text">{message.content.content as string}</textarea>  
           </div>): 
           (<Message key={message.id} model={{
               type: "html",
