@@ -45,6 +45,12 @@ export interface RemoveMessageParams {
   conversationId: ConversationId;
 }
 
+
+export interface UpdateMessageParams {
+  message: ChatMessage<MessageContentType>;
+  conversationId: ConversationId;
+}
+
 export interface SendTypingParams extends SendTypingServiceParams {
   throttle: boolean;
 }
@@ -65,6 +71,7 @@ type ChatContextProps = ChatState & {
   updateMessage: (message: ChatMessage<MessageContentType>) => void;
   deleteMessage: (message: ChatMessage<MessageContentType>) => void;
   removeMessage: (params: RemoveMessageParams) => void;
+  editMessage: (params: UpdateMessageParams) => void;
   setDraft: (message: string) => void;
   sendTyping: (params: SendTypingParams) => void;
   addConversation: (conversation: Conversation) => void;
@@ -492,6 +499,26 @@ export const ChatProvider = <S extends IChatService>({
     [storage, updateState]
   );
 
+  const editMessage = useCallback(
+      ({
+        message,
+        conversationId,
+      }: RemoveMessageParams) => {
+        storage.updateMessage(
+          message
+        );
+  
+        updateState();
+  
+        serviceRef.current.updateMessage({
+          message: message,
+          conversationId,
+        });
+      },
+      [storage, updateState, serviceRef]
+    );
+  
+
     /**
    * Delete message
    * @param message
@@ -638,6 +665,7 @@ export const ChatProvider = <S extends IChatService>({
         updateMessage,
         deleteMessage,
         removeMessage,
+        editMessage,
         setDraft,
         sendTyping,
         addConversation,

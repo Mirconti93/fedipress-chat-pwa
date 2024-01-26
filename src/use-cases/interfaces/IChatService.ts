@@ -4,8 +4,10 @@ import {
   DeleteMessageServiceParams,
   SendMessageServiceParams,
   SendTypingServiceParams,
+  UpdateMessageServiceParams,
 } from "../Types";
 import { ChatEvent } from "../events";
+import { UpdateMessageEventParams } from "../events/UpdateMessageEvent";
 
 /**
  * Why it is prefixed by I?
@@ -59,4 +61,7 @@ export interface IChatService {
   sendTyping: (params: SendTypingServiceParams) => void;
 
   deleteMessage: (params: DeleteMessageServiceParams) => void;
+  
+  updateMessage: (params: UpdateMessageServiceParams) => void;
+
 }

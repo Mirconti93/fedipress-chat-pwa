@@ -17,7 +17,7 @@ export const Chat = ({user}:{user:User}) => {
     
     // Get all chat related values and methods from useChat hook 
     const {
-        currentMessages, conversations, activeConversation, setActiveConversation, deleteMessage, removeMessage, sendMessage, getUser, currentMessage, setCurrentMessage,
+        currentMessages, conversations, activeConversation, setActiveConversation, deleteMessage, updateMessage, removeMessage, editMessage, sendMessage, getUser, currentMessage, setCurrentMessage,
         sendTyping, setCurrentUser
     } = useChat();
     
@@ -117,6 +117,15 @@ export const Chat = ({user}:{user:User}) => {
     const handleDelete = (message: ChatMessage<MessageContentType>) => {
         if ( activeConversation ) {
             removeMessage({
+                message,
+                conversationId: activeConversation.id
+            });
+        }
+    }
+
+    const handleEdit = (message: ChatMessage<MessageContentType>) => {
+        if ( activeConversation ) {
+            editMessage({
                 message,
                 conversationId: activeConversation.id
             });

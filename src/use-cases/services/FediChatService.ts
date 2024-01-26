@@ -13,6 +13,7 @@ import {
 import { IStorage } from "../interfaces";
 import { ChatEvent, MessageEvent, UserTypingEvent, DeleteMessageEvent, DeleteMessageEventParams } from "../events";
 import { ChatMessage } from "../ChatMessage";
+import { UpdateMessageEvent, UpdateMessageEventParams } from "../events/UpdateMessageEvent";
 
 type EventHandlers = {
   onMessage: ChatEventHandler<
@@ -22,6 +23,10 @@ type EventHandlers = {
   onDeleteMessage: ChatEventHandler<
     ChatEventType.DeleteMessage,
     ChatEvent<ChatEventType.DeleteMessage>
+  >;
+  onUpdateMessage: ChatEventHandler<
+    ChatEventType.UpdateMessage,
+    ChatEvent<ChatEventType.UpdateMessage>
   >;
   onConnectionStateChanged: ChatEventHandler<
     ChatEventType.ConnectionStateChanged,
@@ -53,6 +58,7 @@ export class FediChatService implements IChatService {
   eventHandlers: EventHandlers = {
     onMessage: () => {},
     onDeleteMessage: () => {},
+    onUpdateMessage: () => {},
     onConnectionStateChanged: () => {},
     onUserConnected: () => {},
     onUserDisconnected: () => {},
@@ -131,6 +137,19 @@ export class FediChatService implements IChatService {
             new DeleteMessageEvent({ message, conversationId })
           );
         }
+      } else {
+        const message = detail.message as ChatMessage<MessageContentType.TextHtml>;
+        const { conversationId } = detail;
+
+        if (this.eventHandlers.onUpdateMessage && detail.sender !== this) {
+          // Running the onUserTyping callback registered by ChatProvider will cause:
+          // 1. Add the user to the list of users who are typing in the conversation
+          // 2. Debounce
+          // 3. Re-render
+          this.eventHandlers.onUpdateMessage(
+            new UpdateMessageEvent({ message, conversationId })
+          );
+        }
       }
     });
   }
@@ -193,6 +212,23 @@ export class FediChatService implements IChatService {
     });
 
     window.dispatchEvent(deleteMessageEvent);
+  }
+
+  updateMessage({ message, conversationId }: UpdateMessageEventParams) {
+    // We send the "typing" signalization using a CustomEvent dispatched to the window object.
+    // It is received in the callback assigned in the constructor
+    // In a real application, instead of dispatching the event here,
+    // you will implement sending signalization to your chat server.
+    const updateMessage = new CustomEvent("chat-protocol", {
+      detail: {
+        type:ChatEventType.UpdateMessage,
+        message,
+        conversationId,
+        sender: this,
+      },
+    });
+
+    window.dispatchEvent(updateMessage);
   }
 
 
