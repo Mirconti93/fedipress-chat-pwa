@@ -1,30 +1,12 @@
-import "bootstrap/dist/css/bootstrap.min.css";
-import './App.css';
-import "@chatscope/chat-ui-kit-styles/dist/default/styles.min.css";
-import {
-    BasicStorage,
-    ChatMessage,
-    ChatProvider,
-    Conversation,
-    ConversationId,
-    ConversationRole,
-    IStorage,
-    MessageContentType,
-    Participant,
-    Presence,
-    TypingUsersList,
-    UpdateState,
-    User,
-    UserStatus
-} from "./use-cases";
-import {FediChatService} from "./use-cases/services/FediChatService";
-import {Chat} from "./components/Chat";
+
 import {nanoid} from "nanoid";
 import {Col, Container, Row} from "react-bootstrap";
-import {akaneModel, eliotModel, emilyModel, joeModel, users} from "./data/data";
-import {AutoDraft} from "./use-cases/enums/AutoDraft";
-import {Footer} from "./components/Footer";
+import {Footer} from "./Footer";
 import { ChangeEvent, FormEvent, useState } from "react";
+import { AutoDraft, BasicStorage, ChatMessage, ChatProvider, IStorage, MessageContentType, Presence, UpdateState, User, UserStatus } from "../use-cases";
+import { akaneModel, eliotModel, emilyModel, joeModel } from "../data/data";
+import { Chat } from "./Chat";
+import { FediChatService } from "../use-cases/services";
 
 // sendMessage and addMessage methods can automagically generate id for messages and groups
 // This allows you to omit doing this manually, but you need to provide a message generator
@@ -94,69 +76,10 @@ const chats = [
     {name: "Joe", storage: joeStorage}
 ];
 
-function createConversation(id: ConversationId, name: string): Conversation {
-    return new Conversation({
-        id,
-        participants: [
-            new Participant({
-                id: name,
-                role: new ConversationRole([])
-            })
-        ],
-        unreadCounter: 0,
-        typingUsers: new TypingUsersList({items: []}),
-        draft: ""
-    });
-}
+function Home() {
 
-// Add users and conversations to the states
-chats.forEach(c => {
-
-    users.forEach(u => {
-        if (u.name !== c.name) {
-            c.storage.addUser(new User({
-                id: u.name,
-                presence: new Presence({status: UserStatus.Available, description: ""}),
-                firstName: "",
-                lastName: "",
-                username: u.name,
-                email: "",
-                avatar: u.avatar,
-                bio: ""
-            }));
-
-            const conversationId = nanoid();
-
-            const myConversation = c.storage.getState().conversations.find(cv => typeof cv.participants.find(p => p.id === u.name) !== "undefined");
-            if (!myConversation) {
-
-                c.storage.addConversation(createConversation(conversationId, u.name));
-
-                const chat = chats.find(chat => chat.name === u.name);
-
-                if (chat) {
-
-                    const hisConversation = chat.storage.getState().conversations.find(cv => typeof cv.participants.find(p => p.id === c.name) !== "undefined");
-                    if (!hisConversation) {
-                        chat.storage.addConversation(createConversation(conversationId, c.name));
-                    }
-
-                }
-
-            }
-
-        }
-    });
-
-});
-
-
-
-
-function App() {
-
-    const [username, setUsername] = useState('');
-    const [password, setPassword] = useState('');
+    //const [username, setUsername] = useState('');
+    //const [password, setPassword] = useState('');
     const [loggedIn, setLoggedIn] = useState(false);
 
     const handleUsernameChange = (event: ChangeEvent<HTMLInputElement>) => {
@@ -164,7 +87,7 @@ function App() {
     };
 
     const handlePasswordChange = (event: ChangeEvent<HTMLInputElement>) => {
-    //setPassword(event.target.value);
+        //setPassword(event.target.value);
     };
 
     const handleSubmit = (event: FormEvent<HTMLFormElement>) => {
@@ -215,7 +138,7 @@ function App() {
                 <label>Username:</label>
                 <input
                   type="text"
-                  value={username}
+                  value={"username"}
                   onChange={handleUsernameChange}
                 />
               </div>
@@ -223,7 +146,7 @@ function App() {
                 <label>Password:</label>
                 <input
                   type="password"
-                  value={password}
+                  value={"password"}
                   onChange={handlePasswordChange}
                 />
               </div>
@@ -235,5 +158,4 @@ function App() {
     
 
 }
-
-export default App;
+export default Home;
