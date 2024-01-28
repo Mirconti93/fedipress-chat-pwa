@@ -49,4 +49,21 @@
   color: rgba(0,0,0,.87);
   overflow-wrap: anywhere;
   word-break: break-word;
+  width: 100%;
+  height: 150px; /* Altezza dell'area di testo */
+}
+
+.submit-button {
+    margin: 16px auto;
+}
+
+.textarea-container {
+  position: relative;
+}
+
+.button-inside-textarea {
+  position: absolute;
+  z-index: 2px;
+  bottom: 20px; /* Regola la posizione verticale del bottone all'interno dell'area di testo */
+  right: 10px; /* Regola la posizione orizzontale del bottone all'interno dell'area di testo */
 }

@@ -64,6 +64,7 @@ export class MessageGroup {
       return false;
     }
 
+    console.log("edit message replace 2:" + message?.content + " " + index)
     this.messages = this.messages
       .slice(0, index)
       .concat(message)

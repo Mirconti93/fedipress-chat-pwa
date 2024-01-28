@@ -210,25 +210,42 @@ function App() {
             <Footer/>
         </div>
           ) : (
-            <form onSubmit={handleSubmit}>
-              <div>
-                <label>Username:</label>
-                <input
-                  type="text"
-                  value={username}
-                  onChange={handleUsernameChange}
-                />
-              </div>
-              <div>
-                <label>Password:</label>
-                <input
-                  type="password"
-                  value={password}
-                  onChange={handlePasswordChange}
-                />
-              </div>
-              <button type="submit">Login</button>
-            </form>
+
+        <div className='container mt-5'>
+            <div className='row justify-content-center'>
+                <div className='col-md-6'>
+                    <div className='card'>
+                        <div className='card-header'>
+                        <h4>Login</h4>
+                        </div>
+                        <div className='card-body'>
+                            <form onSubmit={handleSubmit}>
+                            <div>
+                                <label>Username:</label>
+                                <input
+                                type="text"
+                                className='form-control'
+                                value={username}
+                                onChange={handleUsernameChange}
+                                />
+                            </div>
+                            <div>
+                                <label>Password:</label>
+                                <input
+                                type="password"
+                                className='form-control'
+                                value={password}
+                                onChange={handlePasswordChange}
+                                />
+                            </div>
+                            <button type="submit" className="btn btn-primary submit-button">Login</button>
+                            </form>
+                        
+                        </div>
+                    </div>
+                </div>
+            </div>
+            </div>
           )}
         </div>
       );

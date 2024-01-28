@@ -336,9 +336,10 @@ export class BasicStorage<ConversationData = any>
         const group = groups[i];
 
         const [currentMessage, idx] = group.getMessage(message.id);
-
+        console.log("edit message:" + currentMessage?.content + " " + idx)
         if (currentMessage) {
           group.replaceMessage(message, idx as number);
+          console.log("edit message replace:" + message?.content)
         }
       }
     }
