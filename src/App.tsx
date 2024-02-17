@@ -195,6 +195,8 @@ function App() {
                             <Chat user={akane}/>
                         </ChatProvider>
                     </Col>
+                </Row>
+                <Row>   
                     <Col>
                         <ChatProvider serviceFactory={serviceFactory} storage={eliotStorage} config={{
                             typingThrottleTime: 250,

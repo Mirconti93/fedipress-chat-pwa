@@ -13,6 +13,7 @@ index.php',
   '/styles.css',
   '/script.js',*/
 
+/* eslint-disable-next-line no-restricted-globals */
 self.addEventListener('install', (event) => {
   console.log('Service Worker installato con successo:', event);
   event.waitUntil(
@@ -23,12 +24,13 @@ self.addEventListener('install', (event) => {
   );
 });
 
+/* eslint-disable-next-line no-restricted-globals */
 self.addEventListener('fetch', (event) => {
 console.log('Service Worker ha intercettato una richiesta di fetch:', event);
   event.respondWith(
     caches.match(event.request)
       .then((response) => {
-        // Se la risorsa è già in cache, restituisci la versione in cache
+        // Se la risorsa ï¿½ giï¿½ in cache, restituisci la versione in cache
         if (response) {
           return response;
         }
@@ -36,7 +38,7 @@ console.log('Service Worker ha intercettato una richiesta di fetch:', event);
         // Altrimenti, effettua una richiesta di rete e memorizza la risorsa in cache per le future visite
         return fetch(event.request)
           .then((response) => {
-            // Verifica se la risposta è valida
+            // Verifica se la risposta ï¿½ valida
             if (!response || response.status !== 200 || response.type !== 'basic') {
               return response;
             }
@@ -59,6 +61,7 @@ console.log('Service Worker ha intercettato una richiesta di fetch:', event);
   );
 });
 
+/* eslint-disable-next-line no-restricted-globals */
 self.addEventListener('activate', (event) => {
   console.log('Service Worker attivato con successo:', event);
   event.waitUntil(

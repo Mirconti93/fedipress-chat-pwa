@@ -7,11 +7,12 @@ import { Message } from "@chatscope/chat-ui-kit-react";
 
 interface ExtendedMessageProps {
   message: ChatMessage<MessageContentType>;
+  senderId: String;
   handleEdit: (message: ChatMessage<MessageContentType>) => void;
   handleDelete: (message: ChatMessage<MessageContentType>) => void;
 }
 
-const ExtendedMessage: React.FC<ExtendedMessageProps> = ({message, handleEdit, handleDelete}) => {
+const ExtendedMessage: React.FC<ExtendedMessageProps> = ({message, senderId, handleEdit, handleDelete}) => {
     console.log('message:' + message.id);
 
     const [popupIsOpen, setPopupIsOpen] = useState(false);
@@ -22,7 +23,7 @@ const ExtendedMessage: React.FC<ExtendedMessageProps> = ({message, handleEdit, h
 
     return (
       <Row className="message-row">
-        {popupIsOpen && message.direction === MessageDirection.Incoming && <div className="popup">
+        {popupIsOpen && senderId === message.senderId && message.direction === MessageDirection.Incoming && <div className="popup">
           <div >
               <Row><span className="close" onClick={()=>{
                 setEditMode(false)
@@ -38,7 +39,7 @@ const ExtendedMessage: React.FC<ExtendedMessageProps> = ({message, handleEdit, h
           </div>
         </div>}
 
-        {editMode ? (<div>
+        {editMode && message.senderId == senderId ? (<div>
             <div className="textarea-container">
               <textarea className="edit-text" value={editedContent} onChange={e => setEditedContent(e.target.value)}></textarea>
               <button className="button-inside-textarea cs-button cs-button--send" onClick={(e)=>{

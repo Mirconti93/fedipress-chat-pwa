@@ -183,7 +183,7 @@ export const Chat = ({user}:{user:User}) => {
             <MessageList typingIndicator={getTypingIndicator()}>
                 {activeConversation && currentMessages.map( (g) => <MessageGroup key={g.id} direction={g.direction}>
                     <MessageGroup.Messages>
-                        {g.messages.map((m:ChatMessage<MessageContentType>) => <ExtendedMessage key={m.id} message={m} handleDelete={handleDelete} handleEdit={handleEdit}/>)}
+                        {g.messages.map((m:ChatMessage<MessageContentType>) => <ExtendedMessage key={m.id} senderId = {user.id} message={m} handleDelete={handleDelete} handleEdit={handleEdit}/>)}
                     </MessageGroup.Messages>
                 </MessageGroup>)}
             </MessageList>
