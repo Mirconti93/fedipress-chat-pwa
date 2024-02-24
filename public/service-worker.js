@@ -1,4 +1,9 @@
+import { precacheAndRoute } from "workbox-precaching";
+
 // service-worker.js
+
+// Use with precache injection
+//precacheAndRoute(self.__WB_MANIFEST);
 
 const CACHE_NAME = 'my-pwa-cache-v2';
 const urlsToCache = [
