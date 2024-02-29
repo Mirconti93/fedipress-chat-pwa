@@ -135,9 +135,13 @@ export const Chat = ({user}:{user:User}) => {
     const handleOnAttach = (evt: MouseEvent<HTMLButtonElement>) => {
         console.log('Click on attach');
     };
+
+    const [showConversation, setShowConversation] = useState(false);
     
     return (<MainContainer responsive>
-       <Sidebar position="left" scrollable>
+        {!showConversation ?
+        (<Sidebar position="left" scrollable>
+            
             <ConversationHeader style={{backgroundColor:"#fff"}}>
                 <Avatar src={user.avatar} />
                 <ConversationHeader.Content>
@@ -168,12 +172,17 @@ export const Chat = ({user}:{user:User}) => {
                                   info={c.draft ? `Draft: ${c.draft.replace(/<br>/g,"\n").replace(/&nbsp;/g, " ")}` : ``}
                                   active={activeConversation?.id === c.id}
                                   unreadCnt={c.unreadCounter}
-                                  onClick={() => setActiveConversation(c.id)}>
+                                  onClick={() => {
+                                    setShowConversation(true)
+                                    setActiveConversation(c.id)
+                                }}>
                         {avatar}
                     </Conversation>
                 })}
             </ConversationList>
         </Sidebar>
+        
+        ) : (
         
         <ChatContainer>
             {activeConversation && <ConversationHeader>
@@ -188,7 +197,7 @@ export const Chat = ({user}:{user:User}) => {
                 </MessageGroup>)}
             </MessageList>
             <MessageInput value={currentMessage} onChange={handleChange} onSend={handleSend} disabled={!activeConversation} attachButton={true} placeholder="Type here..." onAttachClick={handleOnAttach}/>
-        </ChatContainer>
+        </ChatContainer>)}
     </MainContainer>
     
     );

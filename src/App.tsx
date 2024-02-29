@@ -180,7 +180,7 @@ function App() {
     };
 
     return (
-        <div>
+        <div className="h-100">
           {loggedIn ? (
             <div className="h-100 d-flex flex-column overflow-hidden">
             <Container fluid className="p-4 flex-grow-1 position-relative overflow-hidden">
@@ -190,8 +190,7 @@ function App() {
                             typingThrottleTime: 250,
                             typingDebounceTime: 900,
                             debounceTyping: true,
-                            autoDraft: AutoDraft.Save | AutoDraft.Restore
-                        }}>
+                            autoDraft: AutoDraft.Save | AutoDraft.Restore}}>
                             <Chat user={akane}/>
                         </ChatProvider>
                     </Col>
@@ -213,10 +212,10 @@ function App() {
         </div>
           ) : (
 
-        <div className='container mt-5'>
+        <div className='login container mt-5'>
             <div className='row justify-content-center'>
                 <div className='col-md-6'>
-                    <div className='card'>
+                    <div className='login-cardcard'>
                         <div className='card-header'>
                         <h4>Login</h4>
                         </div>

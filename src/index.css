@@ -15,3 +15,14 @@ body {
   -webkit-font-smoothing: antialiased;
   -moz-osx-font-smoothing: grayscale;
 }
+
+#root {
+  background-color: rgb(48, 50, 54);
+  color:#fff;
+}
+
+.login-card {
+  background-color: rgb(31, 31, 31);
+  color:#fff !important;
+}
+
