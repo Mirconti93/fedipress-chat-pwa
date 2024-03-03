@@ -67,3 +67,9 @@
   bottom: 20px; /* Regola la posizione verticale del bottone all'interno dell'area di testo */
   right: 10px; /* Regola la posizione orizzontale del bottone all'interno dell'area di testo */
 }
+
+.conversation-container {
+    width: 100%;
+    background-color: rgb(48, 50, 54) !important;
+    color: #fff !important;
+}

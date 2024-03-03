@@ -139,10 +139,34 @@ export const Chat = ({user}:{user:User}) => {
     const [showConversation, setShowConversation] = useState(false);
     
     return (<MainContainer responsive>
-        {!showConversation ?
-        (<Sidebar position="left" scrollable>
+        {showConversation ? 
+        
+
+        //Conversation list screen 
+        (
+ 
             
-            <ConversationHeader style={{backgroundColor:"#fff"}}>
+            <ChatContainer>
+            {activeConversation && <ConversationHeader>
+                {currentUserAvatar}
+                <ConversationHeader.Content userName={currentUserName} />
+            </ConversationHeader>}
+            <MessageList typingIndicator={getTypingIndicator()}>
+                {activeConversation && currentMessages.map( (g) => <MessageGroup key={g.id} direction={g.direction}>
+                    <MessageGroup.Messages>
+                        {g.messages.map((m:ChatMessage<MessageContentType>) => <ExtendedMessage key={m.id} senderId = {user.id} message={m} handleDelete={handleDelete} handleEdit={handleEdit}/>)}
+                    </MessageGroup.Messages>
+                </MessageGroup>)}
+            </MessageList>
+            <MessageInput value={currentMessage} onChange={handleChange} onSend={handleSend} disabled={!activeConversation} attachButton={true} placeholder="Type here..." onAttachClick={handleOnAttach}/>
+            </ChatContainer>
+
+        //Message list screen    
+        ) : (
+
+        <div className="conversation-container">
+            
+            <ConversationHeader >
                 <Avatar src={user.avatar} />
                 <ConversationHeader.Content>
                     {user.username}
@@ -180,24 +204,8 @@ export const Chat = ({user}:{user:User}) => {
                     </Conversation>
                 })}
             </ConversationList>
-        </Sidebar>
-        
-        ) : (
-        
-        <ChatContainer>
-            {activeConversation && <ConversationHeader>
-                {currentUserAvatar}
-                <ConversationHeader.Content userName={currentUserName} />
-            </ConversationHeader>}
-            <MessageList typingIndicator={getTypingIndicator()}>
-                {activeConversation && currentMessages.map( (g) => <MessageGroup key={g.id} direction={g.direction}>
-                    <MessageGroup.Messages>
-                        {g.messages.map((m:ChatMessage<MessageContentType>) => <ExtendedMessage key={m.id} senderId = {user.id} message={m} handleDelete={handleDelete} handleEdit={handleEdit}/>)}
-                    </MessageGroup.Messages>
-                </MessageGroup>)}
-            </MessageList>
-            <MessageInput value={currentMessage} onChange={handleChange} onSend={handleSend} disabled={!activeConversation} attachButton={true} placeholder="Type here..." onAttachClick={handleOnAttach}/>
-        </ChatContainer>)}
+            </div>
+    )}
     </MainContainer>
     
     );
