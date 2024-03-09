@@ -191,7 +191,8 @@ export const Chat = ({user}:{user:User}) => {
                         return [undefined, undefined]
                     })();
 
-                    return <Conversation key={c.id}
+                    return <Conversation className ="conversation-item"
+                                key={c.id}
                                   name={name}
                                   info={c.draft ? `Draft: ${c.draft.replace(/<br>/g,"\n").replace(/&nbsp;/g, " ")}` : ``}
                                   active={activeConversation?.id === c.id}

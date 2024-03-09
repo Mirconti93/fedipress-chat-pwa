@@ -212,10 +212,10 @@ function App() {
         </div>
           ) : (
 
-        <div className='login container mt-5'>
+        <div className='login-card container mt-5'>
             <div className='row justify-content-center'>
                 <div className='col-md-6'>
-                    <div className='login-cardcard'>
+                    <div>
                         <div className='card-header'>
                         <h4>Login</h4>
                         </div>

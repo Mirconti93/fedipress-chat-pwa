@@ -73,3 +73,10 @@
     background-color: rgb(48, 50, 54) !important;
     color: #fff !important;
 }
+
+.conversation-item {
+    background-color: rgb(31, 31, 31);
+    color:#fff !important;
+    border-bottom: 1px #fff;
+    margin: auto;
+  }
