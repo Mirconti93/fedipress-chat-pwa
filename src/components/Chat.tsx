@@ -12,6 +12,7 @@ import {
 } from "../use-cases";
 import {MessageContent, TextContent, User} from "../use-cases";
 import ExtendedMessage from "./ExtendedMessage";
+import { Button } from "react-bootstrap";
 
 export const Chat = ({user}:{user:User}) => {
     
@@ -205,6 +206,9 @@ export const Chat = ({user}:{user:User}) => {
                     </Conversation>
                 })}
             </ConversationList>
+            <Button>
+            
+            </Button>
             </div>
     )}
     </MainContainer>
