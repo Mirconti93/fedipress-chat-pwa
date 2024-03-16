@@ -13,6 +13,7 @@ import {
 import {MessageContent, TextContent, User} from "../use-cases";
 import ExtendedMessage from "./ExtendedMessage";
 import { Button } from "react-bootstrap";
+import Conversations from "./Conversations";
 
 export const Chat = ({user}:{user:User}) => {
     
@@ -140,6 +141,10 @@ export const Chat = ({user}:{user:User}) => {
     const [showConversation, setShowConversation] = useState(false);
     
     return (<MainContainer responsive>
+
+        <Conversations senderId="" handleClick={console.log}/>
+
+
         {showConversation ? 
         
 

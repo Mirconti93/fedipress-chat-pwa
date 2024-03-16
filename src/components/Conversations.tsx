@@ -1,7 +1,7 @@
 import { useEffect, useState } from "react";
 import { ChatMessage, MessageContent, MessageContentType, MessageDirection } from "../use-cases";
 import { Card, CardBody, CardTitle, Col, Row } from "react-bootstrap";
-import { Message } from "@chatscope/chat-ui-kit-react";
+import { ConversationHeader, Message } from "@chatscope/chat-ui-kit-react";
 
 
 
@@ -16,29 +16,38 @@ const Conversations: React.FC<ConversationsProps> = ({senderId, handleClick}) =>
     const [conversations, setConversations] = useState([]);
     useEffect(() => {
         async function loadConversations() {
-            const response = await fetch('/wp-json/wp/v2/posts');
+            const response = await fetch('https://www.lightonmatter.it/wp-json/wp/v2/comments');
             if(!response.ok) {
                 // oups! something went wrong
                 return;
             }
     
-            const conversations = await response.json();
-            setConversations(conversations);
+            const conversationList = await response.json();
+            setConversations(conversationList);
+
+            console.log(conversationList)
+        
         }
     
         loadConversations();
    }, [])
 
+   
+
     return (
       <Col>
         {conversations.map((conversation, index) => (
-        
+
+          
           <Card>
+            <CardTitle>
+              {conversation}
+            </CardTitle>
+            <CardBody>
+           
+            </CardBody>
             
-                  <CardTitle
-                      color="textSecondary"
-                      dangerouslySetInnerHTML={{__html: conversation}} />
-                  <p>m</p>
+        
           </Card>
         
        ))}
