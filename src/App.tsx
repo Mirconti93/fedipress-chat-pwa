@@ -24,7 +24,7 @@ import {Col, Container, Row} from "react-bootstrap";
 import {akaneModel, eliotModel, emilyModel, joeModel, users} from "./data/data";
 import {AutoDraft} from "./use-cases/enums/AutoDraft";
 import {Footer} from "./components/Footer";
-import { ChangeEvent, FormEvent, useState } from "react";
+import { ChangeEvent, FormEvent, useEffect, useState } from "react";
 
 // sendMessage and addMessage methods can automagically generate id for messages and groups
 // This allows you to omit doing this manually, but you need to provide a message generator
@@ -33,6 +33,7 @@ import { ChangeEvent, FormEvent, useState } from "react";
 const messageIdGenerator = (message: ChatMessage<MessageContentType>) => nanoid();
 const groupIdGenerator = () => nanoid();
 
+const userStorage = new BasicStorage({groupIdGenerator, messageIdGenerator});
 const akaneStorage = new BasicStorage({groupIdGenerator, messageIdGenerator});
 const eliotStorage = new BasicStorage({groupIdGenerator, messageIdGenerator});
 const emilyStorage = new BasicStorage({groupIdGenerator, messageIdGenerator});
@@ -42,6 +43,17 @@ const joeStorage = new BasicStorage({groupIdGenerator, messageIdGenerator});
 const serviceFactory = (storage: IStorage, updateState: UpdateState) => {
     return new FediChatService(storage, updateState);
 };
+
+const storage = new User({
+    id: akaneModel.name,
+    presence: new Presence({status: UserStatus.Available, description: ""}),
+    firstName: "",
+    lastName: "",
+    username: akaneModel.name,
+    email: "",
+    avatar: akaneModel.avatar,
+    bio: ""
+});
 
 const akane = new User({
     id: akaneModel.name,
@@ -106,6 +118,22 @@ function createConversation(id: ConversationId, name: string): Conversation {
         unreadCounter: 0,
         typingUsers: new TypingUsersList({items: []}),
         draft: ""
+    });
+}
+
+function createExtendedConversation(id: ConversationId, name: string, description: string): Conversation {
+    return new Conversation({
+        id,
+        participants: [
+            new Participant({
+                id: name,
+                role: new ConversationRole([])
+            })
+        ],
+        unreadCounter: 0,
+        typingUsers: new TypingUsersList({items: []}),
+        draft: "",
+        description
     });
 }
 
@@ -179,6 +207,31 @@ function App() {
     }
     };
 
+    const [conversationsJson, setConversationsJson] = useState([]);
+    useEffect(() => {
+        async function loadConversations() {
+            const response = await fetch('https://www.lightonmatter.it/wp-json/wp/v2/comments');
+            if(!response.ok) {
+                // oups! something went wrong
+                return;
+            }
+
+            setConversationsJson(await response.json());
+        
+            conversationsJson.forEach(c => {
+                const obj = JSON.parse(JSON.stringify(c));
+                console.log(obj)
+                akaneStorage.addConversation(createExtendedConversation(obj.id, obj.author_name, "Ciao"));
+                console.log(userStorage.getConversation.toString)
+            });
+
+    
+        
+        }
+
+        loadConversations();
+    }, [])
+
     return (
         <div className="h-100">
           {loggedIn ? (
@@ -192,18 +245,6 @@ function App() {
                             debounceTyping: true,
                             autoDraft: AutoDraft.Save | AutoDraft.Restore}}>
                             <Chat user={akane}/>
-                        </ChatProvider>
-                    </Col>
-                </Row>
-                <Row>   
-                    <Col>
-                        <ChatProvider serviceFactory={serviceFactory} storage={eliotStorage} config={{
-                            typingThrottleTime: 250,
-                            typingDebounceTime: 900,
-                            debounceTyping: true,
-                            autoDraft: AutoDraft.Save | AutoDraft.Restore
-                        }}>
-                            <Chat user={eliot}/>
                         </ChatProvider>
                     </Col>
                 </Row>

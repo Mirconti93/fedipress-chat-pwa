@@ -70,6 +70,7 @@ export const Chat = ({user}:{user:User}) => {
             content: text as unknown as MessageContent<TextContent>,
             contentType: MessageContentType.TextHtml,
             senderId: user.id,
+            receiverId: "",
             direction: MessageDirection.Outgoing,
             status: MessageStatus.Sent
         });
@@ -142,9 +143,7 @@ export const Chat = ({user}:{user:User}) => {
     
     return (<MainContainer responsive>
 
-        <Conversations senderId="" handleClick={console.log}/>
-
-
+    
         {showConversation ? 
         
 
