@@ -25,23 +25,23 @@ const Conversations: React.FC<ConversationsProps> = ({senderId, handleClick}) =>
             const conversationList = await response.json();
             setConversations(conversationList);
 
-            console.log(conversationList)
+            console.log(conversations)
         
         }
     
         loadConversations();
    }, [])
 
-   
+  
 
     return (
       <Col>
         {conversations.map((conversation, index) => (
-
+          
           
           <Card>
             <CardTitle>
-              {conversation}
+              {JSON.parse(JSON.stringify(conversation)).author}
             </CardTitle>
             <CardBody>
            
