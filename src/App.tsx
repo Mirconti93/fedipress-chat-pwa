@@ -218,19 +218,32 @@ function App() {
 
             setConversationsJson(await response.json());
         
-            conversationsJson.forEach(c => {
-                const obj = JSON.parse(JSON.stringify(c));
-                console.log(obj)
-                akaneStorage.addConversation(createExtendedConversation(obj.id, obj.author_name, "Ciao"));
-                console.log(userStorage.getConversation.toString)
-            });
-
     
+
         
         }
 
         loadConversations();
+
+        
     }, [])
+
+    conversationsJson.forEach(c => {
+        const obj = JSON.parse(JSON.stringify(c));
+        console.log("conversations 1:" + obj)
+        akaneStorage.addConversation(createExtendedConversation(obj.id, obj.author_name, "Ciao"));
+        akaneStorage.addUser(new User({
+            id: obj.author_name,
+            presence: new Presence({status: UserStatus.Available, description: ""}),
+            firstName: obj.author_name,
+            lastName: obj.author_name,
+            username: obj.author_name,
+            email: "",
+            avatar: akane.avatar,
+            bio: ""
+        }))
+        console.log("conversations 2:" + userStorage.getConversation.toString)
+    });
 
     return (
         <div className="h-100">

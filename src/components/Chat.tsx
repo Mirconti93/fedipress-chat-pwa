@@ -143,7 +143,7 @@ export const Chat = ({user}:{user:User}) => {
     
     return (<MainContainer responsive>
 
-    
+        
         {showConversation ? 
         
 
@@ -179,6 +179,8 @@ export const Chat = ({user}:{user:User}) => {
             </ConversationHeader>
             <ConversationList>
                 {conversations.map(c => {
+                    console.log("Conversation:" + c.id)
+
                     // Helper for getting the data of the first participant
                     const [avatar, name] = (() => {
 
