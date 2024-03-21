@@ -19,7 +19,7 @@ export class ChatMessage<T extends MessageContentType> {
   status: MessageStatus;
   contentType: MessageContentType;
   senderId: string;
-  receiverId: string;
+  receiverId?: string;
   direction: MessageDirection;
   content: MessageContent<T>;
   createdTime: Date;
