@@ -80,3 +80,17 @@
     border-bottom: 1px #fff;
     margin: auto;
   }
+
+  .cs-conversation-header, .conversation-item, .cs-conversation-header__user-name, .cs-message-list, .cs-message-input {
+    background-color: rgb(31, 31, 31) !important
+    ;
+    color:#fff !important;
+  }
+
+  .cs-conversation__name {
+    color:#fff !important;
+  }
+
+  .cs-conversation-list {
+    height: auto !important;
+  }
