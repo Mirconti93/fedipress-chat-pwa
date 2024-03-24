@@ -182,22 +182,37 @@ chats.forEach(c => {
 
 });
 
-
-
-//const [comments, setComments] = useState([]);
-    //useEffect(() => {
 async function loadConversations() {
     const response = await fetch('https://www.lightonmatter.it/wp-json/wp/v2/comments');
     if(!response.ok) {
+        console.log("error in response:" + response.status)
         // oups! something went wrong
         return;
     }
 
-    const comments: String[] =await response.json();
+    var comments: String[] =await response.json();
+
+    const sortedItems = [...comments].sort((a, b) => {
+
+        const obj1 = JSON.parse(JSON.stringify(a));
+        const obj2 = JSON.parse(JSON.stringify(b));
+
+        const date1 = new Date(obj1.date.toString());
+        const date2 = new Date(obj2.date.toString());
+
+        if (date1 < date2) {
+            return -1
+        } else if (date1 > date2) {
+            return 1
+        } else {
+            return 0
+        }
+    });
+    comments = sortedItems
     comments.forEach(c => {
         const obj = JSON.parse(JSON.stringify(c));
         console.log("conversation:" + JSON.stringify(c))
-        userStorage.addConversation(createExtendedConversation(obj.id, obj.author_name, "Ciao"));
+        userStorage.addConversation(createExtendedConversation(obj.post, obj.author_name, "Ciao"));
         userStorage.addUser(new User({
             id: obj.author_name,
             presence: new Presence({status: UserStatus.Available, description: ""}),
@@ -218,9 +233,11 @@ async function loadConversations() {
             direction: MessageDirection.Outgoing,
             status: MessageStatus.Sent,
             createdTime: obj.date
-        }), obj.id, true);
-        console.log("conversations 2:" + userStorage.getConversation.toString)
+        }), obj.post, true);
+
     });
+
+    
 
 }
 
