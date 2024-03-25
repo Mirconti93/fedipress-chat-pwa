@@ -193,7 +193,6 @@ async function loadConversations() {
     var comments: String[] =await response.json();
 
     const sortedItems = [...comments].sort((a, b) => {
-
         const obj1 = JSON.parse(JSON.stringify(a));
         const obj2 = JSON.parse(JSON.stringify(b));
 
