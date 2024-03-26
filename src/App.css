@@ -68,6 +68,10 @@
   right: 10px; /* Regola la posizione orizzontale del bottone all'interno dell'area di testo */
 }
 
+.login-card {
+  padding-top: 10%;
+}
+
 .conversation-container {
     width: 100%;
     background-color: rgb(48, 50, 54) !important;

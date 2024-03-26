@@ -289,7 +289,7 @@ function App() {
         </div>
           ) : (
 
-        <div className='login-card container mt-5'>
+        <div className='login-card container'>
             <div className='row justify-content-center'>
                 <div className='col-md-6'>
                     <div>
